@@ -38,7 +38,7 @@ function InquiryView() {
   const [submitting, setSubmitting] = useState<Record<number, boolean>>({});
  
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_LOCALHOST_API_URL}inquiries`)
+    fetch(`${import.meta.env.VITE_API_URL}inquiries`)
       .then((res) => res.json())
       .then((data) => setInquiries(data))
       .catch((err) => console.error(err));
@@ -49,7 +49,7 @@ function InquiryView() {
   };
  
   const handleSubmit = async (inquiry: InquiryData) => {
-    const apiUrl = import.meta.env.VITE_LOCALHOST_API_URL;
+    const apiUrl = import.meta.env.VITE_API_URL;
     setSubmitting((current) => ({ ...current, [inquiry.id]: true }));
     setSubmitStatus((current) => {
       const next = { ...current };
