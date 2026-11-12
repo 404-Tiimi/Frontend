@@ -140,10 +140,14 @@ function InquiryView() {
                 <Typography sx={{ flexGrow: 1 }}>
                   {index + 1}. {q.quest}
                 </Typography>
-                {answers[q.id] && (
+                {answers[q.id] ? (
                     <Typography variant="body2" color="success.main" sx={{ ml: 2 }}>
                     Vastattu
                   </Typography>
+                  ) : (
+                    <Typography variant="body2" color="error" sx={{ ml: 2 }}>
+                      *
+                    </Typography>
                 )}
               </AccordionSummary>
               <AccordionDetails>
