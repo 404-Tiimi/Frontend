@@ -1,5 +1,22 @@
 # React + TypeScript + Vite
 
+## Environment variables
+
+The API URL is read at build time by Vite:
+
+```env
+VITE_API_URL=https://your-api.example.com/
+```
+
+For GitHub Pages deployments, add a repository secret named `VITE_API_URL`
+under **Settings > Secrets and variables > Actions**. The workflow passes that
+secret to `npm run build`, and the value is embedded in the generated frontend.
+The URL should end with `/`, because the app appends paths such as `inquiries`
+and `sessions` to it.
+
+For local development, copy `.env.example` to `.env.local` and set the value
+there. Do not commit `.env.local`.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
