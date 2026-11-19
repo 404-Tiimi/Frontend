@@ -3,6 +3,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Button,
   Container,
   TextField,
@@ -15,6 +16,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { InquiryData } from '../types'; // muuta polku omaksesi
+import { Link } from 'react-router-dom';
 
 // Tumma teema: Card ja Accordion ovat Paper-komponentteja, joten niiden tausta tulee background.paper-arvosta
 const darkTheme = createTheme({
@@ -120,7 +122,19 @@ function InquiryView() {
   return (
     <ThemeProvider theme={darkTheme}>
     <Card sx={{minWidth: 275}} >
-
+    {/* Raporttinapit sivun oikeassa yläkulmassa, yksi jokaiselle kyselylle */}
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1, p: 2 }}>
+      {inquiries.map((inquiry) => (
+        <Button
+          key={inquiry.id}
+          component={Link}
+          to={`/report/${inquiry.id}`}
+          variant="outlined"
+        >
+          Raportti: {inquiry.title}
+        </Button>
+      ))}
+    </Box>
     <Container maxWidth="sm" sx={{ py: 4 }}>
       {inquiries.map((inquiry) => (
           <div key={inquiry.id} style={{ marginBottom: 48 }}>
