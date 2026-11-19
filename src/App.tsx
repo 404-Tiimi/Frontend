@@ -1,12 +1,14 @@
+import { Routes, Route } from 'react-router-dom'
 import './App.css'
 import InquiryView from './Components/InquiryView'
+import ReportView from './Components/ReportView'
 
 function App() {
-
   return (
-    <>
-      <InquiryView/>
-    </>
+    <Routes>
+      <Route path="/" element={<InquiryView />} />
+      <Route path="/report/:id" element={<ReportView />} />
+    </Routes>
   )
 }
 
