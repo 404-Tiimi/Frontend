@@ -29,7 +29,9 @@ const darkTheme = createTheme({
 });
 
 function InquiryView() {
-  const [inquiries, setInquiries] = useState<InquiryData[]>([]);
+  const [inquiry, setInquiry] = useState<InquiryData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   // Vastaukset tallessa kysymyksen id:n mukaan, esim. { 3: "Hyvää ruokaa" }
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitStatus, setSubmitStatus] = useState<
@@ -38,11 +40,43 @@ function InquiryView() {
   const [submitting, setSubmitting] = useState<Record<number, boolean>>({});
  
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}inquiries`)
-      .then((res) => res.json())
-      .then((data) => setInquiries(data))
-      .catch((err) => console.error(err));
+    const inquiryId = new URLSearchParams(window.location.search).get('id');
+
+    if (!inquiryId) {
+      setLoading(false);
+      setLoadError('Kyselyn tunnus puuttuu URL-osoitteesta.');
+      return;
+    }
+
+    const controller = new AbortController();
+
+    fetch(`${import.meta.env.VITE_API_URL}inquiry/${encodeURIComponent(inquiryId)}`, {
+      signal: controller.signal,
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Kyselyä ei löytynyt');
+        }
+        return res.json();
+      })
+      .then((data: InquiryData) => setInquiry(data))
+      .catch((err) => {
+        if (err instanceof Error && err.name !== 'AbortError') {
+          console.error(err);
+          setLoadError('Kyselyn lataaminen epäonnistui.');
+        }
+      })
+      .finally(() => setLoading(false));
+
+    return () => controller.abort();
   }, []);
+
+  const copyShareLink = async () => {
+    if (!inquiry) return;
+
+    const shareUrl = `${window.location.origin}${window.location.pathname}?id=${inquiry.id}`;
+    await navigator.clipboard.writeText(shareUrl);
+  };
  
   const handleChange = (questionId: number, value: string) => {
     setAnswers({ ...answers, [questionId]: value });
@@ -122,8 +156,14 @@ function InquiryView() {
     <Card sx={{minWidth: 275}} >
 
     <Container maxWidth="sm" sx={{ py: 4 }}>
-      {inquiries.map((inquiry) => (
-          <div key={inquiry.id} style={{ marginBottom: 48 }}>
+      {loading && (
+        <CircularProgress />
+      )}
+      {loadError && (
+        <Alert severity="error">{loadError}</Alert>
+      )}
+      {inquiry && (
+          <div style={{ marginBottom: 48 }}>
           <Typography variant="h4" component="h1" gutterBottom>
             {inquiry.title}
           </Typography>
@@ -175,13 +215,20 @@ function InquiryView() {
               'Lähetä vastaukset'
             )}
           </Button>
+          <Button
+            variant="outlined"
+            sx={{ mt: 3, ml: 2 }}
+            onClick={copyShareLink}
+          >
+            Kopioi jaa-linkki
+          </Button>
           {submitStatus[inquiry.id] && (
             <Alert severity={submitStatus[inquiry.id].type} sx={{ mt: 2 }}>
               {submitStatus[inquiry.id].message}
             </Alert>
           )}
         </div>
-      ))}
+      )}
     </Container>
       </Card>
     </ThemeProvider>
