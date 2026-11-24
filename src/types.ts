@@ -9,6 +9,8 @@ export type InquiryData = {
     questions: {
         id: number
         quest: string
+        type: 'TEXT' | 'RADIO'
+        options: string[]
     }[]
 
 
