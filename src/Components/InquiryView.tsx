@@ -13,6 +13,9 @@ import {
   createTheme,
   Alert,
   CircularProgress,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { InquiryData } from '../types'; // muuta polku omaksesi
@@ -170,14 +173,26 @@ function InquiryView() {
                 )}
               </AccordionSummary>
               <AccordionDetails>
-                <TextField
-                  multiline
-                  minRows={3}
-                  fullWidth
-                  placeholder="Kirjoita vastauksesi"
-                  value={answers[q.id] ?? ''}
-                  onChange={(e) => handleChange(q.id, e.target.value)}
-                  />
+                {q.type === 'RADIO' ? (
+                  // Monivalinta: vastaukseksi tallentuu valitun vaihtoehdon teksti
+                  <RadioGroup
+                    value={answers[q.id] ?? ''}
+                    onChange={(e) => handleChange(q.id, e.target.value)}
+                  >
+                    {q.options.map((opt) => (
+                      <FormControlLabel key={opt} value={opt} control={<Radio />} label={opt} />
+                    ))}
+                  </RadioGroup>
+                ) : (
+                  <TextField
+                    multiline
+                    minRows={3}
+                    fullWidth
+                    placeholder="Kirjoita vastauksesi"
+                    value={answers[q.id] ?? ''}
+                    onChange={(e) => handleChange(q.id, e.target.value)}
+                    />
+                )}
               </AccordionDetails>
             </Accordion>
           ))}
