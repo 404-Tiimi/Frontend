@@ -6,7 +6,7 @@ import ReportView from './Components/ReportView'
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<InquiryView />} />
+      <Route path="/inquiry/:id" element={<InquiryView />} />
       <Route path="/report/:id" element={<ReportView />} />
     </Routes>
   )

@@ -37,7 +37,6 @@ type AnswerData = {
   question: { id: number };
 };
 
-// Komponentti saa näytettävän kyselyn id:n propsina
 
 
 function ReportView() {

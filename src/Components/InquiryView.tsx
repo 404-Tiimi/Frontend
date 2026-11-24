@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { InquiryData } from '../types'; // muuta polku omaksesi
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 // Tumma teema: Card ja Accordion ovat Paper-komponentteja, joten niiden tausta tulee background.paper-arvosta
 const darkTheme = createTheme({
@@ -39,12 +39,17 @@ function InquiryView() {
   >({});
   const [submitting, setSubmitting] = useState<Record<number, boolean>>({});
  
+  // useParams palauttaa osoitteen parametrit, esim. /inquiry/3 → { id: "3" }
+  const { id } = useParams();
+
+  // Haetaan vain osoitteen id:tä vastaava kysely
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}inquiries`)
+    fetch(`${import.meta.env.VITE_API_URL}inquiry/${id}`)
       .then((res) => res.json())
-      .then((data) => setInquiries(data))
+      // Kysely palautuu objektina, joten kääritään se listaksi
+      .then((data) => setInquiries(data ? [data] : []))
       .catch((err) => console.error(err));
-  }, []);
+  }, [id]);
  
   const handleChange = (questionId: number, value: string) => {
     setAnswers({ ...answers, [questionId]: value });
