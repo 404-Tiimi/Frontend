@@ -16,6 +16,7 @@ import {
   Alert,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { BarChart } from '@mui/x-charts/BarChart';
 import type { InquiryData } from '../types';
 import { useParams } from 'react-router-dom';
 
@@ -112,6 +113,21 @@ function ReportView() {
                     <AccordionDetails>
                       {qAnswers.length === 0 ? (
                         <Typography color="text.secondary">Ei vastauksia</Typography>
+                      ) : q.type === 'RADIO' ? (
+                        <BarChart
+                          width={500}
+                          height={300}
+                          xAxis={[{ scaleType: 'band', data: q.options }]}
+                          yAxis={[{ label: 'Vastausten määrä', min: 0, tickMinStep: 1 }]}
+                          series={[
+                            {
+                              data: q.options.map(
+                                (option) => qAnswers.filter((answer) => answer.answer === option).length,
+                              ),
+                              label: 'Vastauksia',
+                            },
+                          ]}
+                        />
                       ) : (
                         <List dense>
                           {qAnswers.map((a, i) => (
