@@ -114,20 +114,56 @@ function ReportView() {
                       {qAnswers.length === 0 ? (
                         <Typography color="text.secondary">Ei vastauksia</Typography>
                       ) : q.type === 'RADIO' ? (
-                        <BarChart
-                          width={500}
-                          height={300}
-                          xAxis={[{ scaleType: 'band', data: q.options }]}
-                          yAxis={[{ label: 'Vastausten määrä', min: 0, tickMinStep: 1 }]}
-                          series={[
-                            {
-                              data: q.options.map(
-                                (option) => qAnswers.filter((answer) => answer.answer === option).length,
-                              ),
-                              label: 'Vastauksia',
-                            },
-                          ]}
-                        />
+                        <>
+                          <BarChart
+                            height={300}
+                            margin={{ left: 80, right: 20, top: 20, bottom: 20 }}
+                            xAxis={[
+                              {
+                                scaleType: 'band',
+                                data: q.options,
+                                disableTicks: true,
+                                tickLabelInterval: () => false,
+                              },
+                            ]}
+                            yAxis={[{ label: 'Vastausten määrä', min: 0, tickMinStep: 1 }]}
+                            series={[
+                              {
+                                data: q.options.map(
+                                  (option) => qAnswers.filter((answer) => answer.answer === option).length,
+                                ),
+                                label: 'Vastauksia',
+                              },
+                            ]}
+                          />
+                          <div
+                            style={{
+                              width: '100%',
+                              boxSizing: 'border-box',
+                              display: 'grid',
+                              gridTemplateColumns: `repeat(${q.options.length}, minmax(0, 1fr))`,
+                              paddingLeft: 80,
+                              paddingRight: 20,
+                            }}
+                          >
+                            {q.options.map((option) => (
+                              <Typography
+                                key={option}
+                                variant="caption"
+                                component="div"
+                                sx={{
+                                  px: 0.25,
+                                  minWidth: 0,
+                                  textAlign: 'center',
+                                  overflowWrap: 'break-word',
+                                  whiteSpace: 'normal',
+                                }}
+                              >
+                                {option}
+                              </Typography>
+                            ))}
+                          </div>
+                        </>
                       ) : (
                         <List dense>
                           {qAnswers.map((a, i) => (
